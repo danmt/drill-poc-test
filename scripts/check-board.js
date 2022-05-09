@@ -1,24 +1,88 @@
 const { Connection, PublicKey } = require("@solana/web3.js");
-const APP_ID = process.env.APP_ID;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const { Octokit } = require("@octokit/rest");
+const { createAppAuth } = require("@octokit/auth-app");
+const { getAccount } = require("@solana/spl-token");
 
-const main = async () => {
-    console.log(process.env);
-
-  /* const connection = new Connection(process.env.RPC_ENDPOINT);
+const main = async ({
+  appId,
+  privateKey,
+  githubRepository,
+  programId,
+  rpcEndpoint,
+}) => {
+  const connection = new Connection(rpcEndpoint);
+  const appOctokit = new Octokit({
+    auth: {
+      id: appId,
+      privateKey,
+    },
+    authStrategy: createAppAuth,
+  });
+  const [repoName, owner] = githubRepository.split("/");
+  const repository = await appOctokit.repos.get({
+    owner,
+    repo: repoName,
+  });
   const [boardPublicKey] = await PublicKey.findProgramAddress(
     [
       Buffer.from("board", "utf8"),
-      new BN(process.env.REPOSITORY_ID).toArrayLike(Buffer, "le", 4),
+      new BN(repository.id).toArrayLike(Buffer, "le", 4),
     ],
-    new PublicKey(process.env.PROGRAM_ID)
-  ); */
-  
+    new PublicKey(programId)
+  );
+
   // get all issues with a bounty enabled
+  const issuesForRepo = await appOctokit.issues.listForRepo({
+    repo: repoName,
+    owner,
+    labels: "drill:bounty:enabled",
+    state: "open",
+  });
 
-  // get each of the bounties' vaults
+  console.log({ issuesForRepo });
 
-  // update the bounty enabled comment of each of the respective issues
+  issuesForRepo.data.forEach(async (issue) => {
+    // find bounty enabled comment
+    const issueComments = await appOctokit.issues.listComments({
+      owner: issue.repository.owner,
+      repo: issue.repository.name,
+      issue_number: issue.number,
+    });
+    const bountyEnabledComment = issueComments.data.find(
+      (comment) =>
+        comment.user === appId && comment.body.includes("Bounty Enabled")
+    );
+
+    // find bounty vault account
+    const [bountyPublicKey] = await PublicKey.findProgramAddress(
+      [
+        Buffer.from("bounty", "utf8"),
+        boardPublicKey.toBuffer(),
+        new BN(issue.number).toArrayLike(Buffer, "le", 4),
+      ],
+      new PublicKey(programId)
+    );
+    const [bountyVaultPublicKey] = await PublicKey.findProgramAddress(
+      [Buffer.from("bounty_vault", "utf8"), bountyPublicKey.toBuffer()],
+      new PublicKey(programId)
+    );
+    
+    try {
+      const bountyVaultAccount = await getAccount(
+        connection,
+        bountyVaultPublicKey
+      );
+      console.log({ bountyEnabledComment, bountyVaultAccount });
+    } catch(error) {
+      console.erro({ error })
+    }
+  });
 };
 
-main();
+main({
+  appId: process.env.APP_ID,
+  privateKey: process.env.PRIVATE_KEY,
+  githubRepository: process.env.GITHUB_REPOSITORY,
+  programId: process.env.PROGRAM_ID,
+  rpcEndpoint: process.env.RPC_ENDPOINT,
+});
