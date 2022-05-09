@@ -1,0 +1,20 @@
+name: Drill Board Tracker
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: npm ci
+      - run: node scripts/check-board.js
+        env:
+          RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
+          REPOSITORY_ID: ${{ secrets.REPOSITORY_ID }}
+          PROGRAM_ID: ${{ secrets.PROGRAM_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_ID: ${{ secrets.APP_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
