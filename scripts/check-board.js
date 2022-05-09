@@ -2,6 +2,7 @@ const { Connection, PublicKey } = require("@solana/web3.js");
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 const { getAccount } = require("@solana/spl-token");
+const { BN } = require("bn.js");
 
 const main = async ({
   appId,
@@ -10,6 +11,8 @@ const main = async ({
   programId,
   rpcEndpoint,
 }) => {
+  console.log({ appId });
+
   const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
     auth: {
@@ -66,7 +69,7 @@ const main = async ({
       [Buffer.from("bounty_vault", "utf8"), bountyPublicKey.toBuffer()],
       new PublicKey(programId)
     );
-    
+
     try {
       const bountyVaultAccount = await getAccount(
         connection,
