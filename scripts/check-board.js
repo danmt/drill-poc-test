@@ -84,35 +84,21 @@ const main = async ({
         bountyVaultAccount.mint
       );
 
-      console.log({
-        bountyEnabledComment,
-        bountyVaultAccount,
-        boardPublicKey: boardPublicKey.toBase58(),
-        bountyPublicKey: bountyPublicKey.toBase58(),
-        bountyVaultPublicKey: bountyVaultPublicKey.toBase58(),
-      });
-
       const bodyAsArray = bountyEnabledComment.body.split("\n").filter(segment => segment !== '');
 
-      console.log({ bodyAsArray });
-
       let body = "";
-
-      console.log(({ vaultAmount: Number(bountyVaultAccount.amount) / acceptedMint.decimals}))
 
       if (bodyAsArray.length === 2) {
         body = [
           ...bodyAsArray,
-          `Amount: ${bountyVaultAccount.amount.toString()}`,
+          `Amount: ${Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals)}`,
         ].join("\n");
       } else if (bodyAsArray.length === 3) {
         body = [
           ...bodyAsArray.slice(0, -1),
-          `Amount: ${bountyVaultAccount.amount.toString()}`,
+          `Amount: ${Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals)}`,
         ].join("\n");
       }
-
-      console.log({ body });
 
       await appOctokit.issues.updateComment({
         body,
