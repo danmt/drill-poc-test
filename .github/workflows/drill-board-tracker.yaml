@@ -24,8 +24,11 @@ jobs:
       - id: install-dependencies
         run: npm ci
 
+      - id: build-script
+        run: npm run build
+
       - id: run-script
-        run: node scripts/check-board.js
+        run: node dist/check-board.js
         env:
           RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
           REPOSITORY_ID: ${{ secrets.REPOSITORY_ID }}

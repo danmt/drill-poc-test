@@ -1,8 +1,19 @@
-const { createAppAuth } = require("@octokit/auth-app");
-const { Octokit } = require("@octokit/rest");
-const { getAccount, getMint } = require("@solana/spl-token");
-const { Connection, PublicKey } = require("@solana/web3.js");
-const BN = require("bn.js");
+import { createAppAuth } from "@octokit/auth-app";
+import { Octokit } from "@octokit/rest";
+import { getAccount, getMint } from "@solana/spl-token";
+import { Connection, PublicKey } from "@solana/web3.js";
+import BN from "bn.js";
+
+interface Config {
+  appId: string;
+  installationId: string;
+  botId: string;
+  privateKey: string;
+  githubRepository: string;
+  programId: string;
+  rpcEndpoint: string;
+  cluster: string;
+}
 
 const main = async ({
   appId,
@@ -13,7 +24,7 @@ const main = async ({
   programId,
   rpcEndpoint,
   cluster,
-}) => {
+}: Config) => {
   const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
     auth: {
@@ -46,8 +57,6 @@ const main = async ({
     state: "open",
   });
 
-  console.log('DA FUCK')
-
   issuesForRepo.forEach(async (issue) => {
     // find bounty enabled comment
     const { data: issueComments } = await appOctokit.issues.listComments({
@@ -56,20 +65,12 @@ const main = async ({
       issue_number: issue.number,
     });
 
-    console.log(issueComments);
-
     const bountyEnabledComment = issueComments.find((comment) => {
-      
-      console.log({ 'comment.user.id': comment.user.id }, {botId})
-      console.log('comment.user.id === botId', comment.user.id.toString() === botId)
-
       return (
-        comment.user.id.toString() === botId &&
-        comment.body.toLowerCase().includes("bounty enabled")
+        comment.user?.id.toString() === botId &&
+        comment.body?.toLowerCase().includes("bounty enabled")
       );
     });
-
-    console.log({bountyEnabledComment})
 
     if (bountyEnabledComment !== undefined) {
       // find bounty vault account
@@ -95,13 +96,11 @@ const main = async ({
         bountyVaultAccount.mint
       );
 
-      const bodyAsArray = bountyEnabledComment.body.split("\n").filter(segment => segment !== '');
+      const bodyAsArray = bountyEnabledComment.body?.split("\n").filter(segment => segment !== '');
 
       const bountyVaultUserAmount = Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals);
 
       const explorerUrl = new URL(`https://explorer.solana.com/address/${bountyVaultPublicKey.toBase58()}`);
-
-      console.log({ cluster, 'process.env.CLUSTER': process.env.CLUSTER });
 
       explorerUrl.searchParams.append("cluster", cluster);
 
@@ -111,14 +110,12 @@ const main = async ({
 
       let body = "";
 
-      console.log(bodyAsArray.length)
-
-      if (bodyAsArray.length === 2) {
+      if (bodyAsArray?.length === 2) {
         body = [
           ...bodyAsArray,
           `Amount: ${bountyVaultUserAmount} [view in explorer](${explorerUrl.toString()})`,
         ].join("\n");
-      } else if (bodyAsArray.length === 3) {
+      } else if (bodyAsArray?.length === 3) {
         body = [
           ...bodyAsArray.slice(0, -1),
           `Amount: ${bountyVaultUserAmount} [view in explorer](${explorerUrl.toString()})`,
@@ -134,6 +131,38 @@ const main = async ({
     }
   });
 };
+
+if (process.env.APP_ID === undefined) {
+  throw new Error('APP_ID env variable is missing.')
+}
+
+if (process.env.INSTALLATION_ID === undefined) {
+  throw new Error('INSTALLATION_ID env variable is missing.')
+}
+
+if (process.env.DRILL_BOT_ID === undefined) {
+  throw new Error('DRILL_BOT_ID env variable is missing.')
+}
+
+if (process.env.PRIVATE_KEY === undefined) {
+  throw new Error('PRIVATE_KEY env variable is missing.')
+}
+
+if (process.env.GITHUB_REPOSITORY === undefined) {
+  throw new Error('GITHUB_REPOSITORY env variable is missing.')
+}
+
+if (process.env.PROGRAM_ID === undefined) {
+  throw new Error('PROGRAM_ID env variable is missing.')
+}
+
+if (process.env.RPC_ENDPOINT === undefined) {
+  throw new Error('RPC_ENDPOINT env variable is missing.')
+}
+
+if (process.env.CLUSTER === undefined) {
+  throw new Error('CLUSTER env variable is missing.')
+}
 
 main({
   appId: process.env.APP_ID,
