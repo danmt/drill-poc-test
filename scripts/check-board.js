@@ -23,6 +23,12 @@ const main = async ({
     authStrategy: createAppAuth,
   });
   const [owner, repoName] = githubRepository.split("/");
+
+  const { data: repository } = await appOctokit.repos.get({
+    repo: repoName,
+    owner,
+  });
+
   const [boardPublicKey] = await PublicKey.findProgramAddress(
     [
       Buffer.from("board", "utf8"),
