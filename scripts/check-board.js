@@ -21,13 +21,13 @@ const main = async ({
     }
   });
 
-  const [repoName, owner] = githubRepository.split("/");
+  const [owner, repoName] = githubRepository.split("/");
 
   console.log({
     owner,
     repo: repoName,
   })
-  
+
   try {
     const { data } = await requestWithAuth("GET /repos/{owner}/{repo}", {
       owner,
