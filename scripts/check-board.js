@@ -56,6 +56,8 @@ const main = async ({
       issue_number: issue.number,
     });
 
+    console.log(issueComments);
+
     const bountyEnabledComment = issueComments.find((comment) => {
       return (
         comment.user.id === botId &&
