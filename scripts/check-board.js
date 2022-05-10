@@ -44,8 +44,10 @@ const main = async ({
   });
 
   const { data: app } = await appOctokit.apps.getAuthenticated();
+  const { data: user } = await appOctokit.users.getAuthenticated();
 
   console.log({ app });
+  console.log({ user });
 
   console.log({ issuesForRepo });
 
