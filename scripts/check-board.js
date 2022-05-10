@@ -114,8 +114,8 @@ const main = async ({
 };
 
 main({
-  appId: process.env.APP_ID,
-  installationId: process.env.INSTALLATION_ID,
+  appId: parseInt(process.env.APP_ID, 10),
+  installationId: parseInt(process.env.INSTALLATION_ID, 10),
   privateKey: process.env.PRIVATE_KEY,
   githubRepository: process.env.GITHUB_REPOSITORY,
   programId: process.env.PROGRAM_ID,
