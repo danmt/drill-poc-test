@@ -26,20 +26,33 @@ const main = async ({
     clientSecret: process.env.GITHUB_CLIENT_SECRET
   })
 
-  const appAuth = createAppAuth({
+  const auth = createAppAuth({
     appId,
     privateKey,
-  });
-  
-  const installationAuth123 = await appAuth({
-    type: "installation",
-    installationId,
-    factory: createAppAuth,
+    installationId
   });
 
-  console.log({ installationAuth123 })
+  const requestWithAuth = request.defaults({
+    request: {
+      hook: auth.hook,
+    },
+    mediaType: {
+      previews: ["machine-man"],
+    },
+  });
 
-  const connection = new Connection(rpcEndpoint);
+  console.log({ requestWithAuth })
+
+  const [repoName, owner] = githubRepository.split("/");
+
+  const { data } = await requestWithAuth('GET /repos/{owner}/{repo}/issues', {
+    owner,
+    repo: repoName,
+  })
+
+  console.log({ data })
+
+  /* const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
     auth: {
       id: appId,
@@ -106,7 +119,7 @@ const main = async ({
     } catch (error) {
       console.erro({ error });
     }
-  });
+  }); */
 };
 
 main({
