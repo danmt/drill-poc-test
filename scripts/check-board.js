@@ -79,7 +79,10 @@ const main = async ({
         connection,
         bountyVaultPublicKey
       );
-      const acceptedMint = await getMint(bountyVaultAccount.mint);
+      const acceptedMint = await getMint(
+        connection,
+        bountyVaultAccount.mint
+      );
 
       console.log({
         bountyEnabledComment,
