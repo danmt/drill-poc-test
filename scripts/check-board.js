@@ -50,7 +50,7 @@ const main = async ({
     },
     authStrategy: createAppAuth,
   });
-  const [repoName, owner] = githubRepository.split("/");
+  const [owner, repoName] = githubRepository.split("/");
   const repository = await appOctokit.repos.get({
     owner,
     repo: repoName,
