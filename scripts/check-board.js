@@ -67,7 +67,7 @@ const main = async ({
       }
 
       await appOctokit.issues.updateComment({
-        body: [...bodyAsArray, "Amount: 1"],
+        body,
         comment_id: bountyEnabledComment.id,
         owner,
         repo: repoName,
