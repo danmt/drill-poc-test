@@ -43,6 +43,10 @@ const main = async ({
     state: "open",
   });
 
+  const { data: app } = await appOctokit.apps.getAuthenticated();
+
+  console.log({ app });
+
   console.log({ issuesForRepo });
 
   issuesForRepo.forEach(async (issue) => {
@@ -55,13 +59,13 @@ const main = async ({
 
     console.log({ issueComments });
 
-    const bountyEnabledComment = issueComments.find(
-      (comment) =>{
-        console.log(comment.user, comment.user.id === appId);
-        
+    const bountyEnabledComment = issueComments.find((comment) => {
+      console.log(comment.user, comment.user.id === appId);
 
-        return comment.user.id === appId &&
+      return (
+        comment.user.id === appId &&
         comment.body.toLowerCase().includes("bounty enabled")
+      );
     });
 
     console.log({ bountyEnabledComment });
