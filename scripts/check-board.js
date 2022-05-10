@@ -45,7 +45,7 @@ const main = async ({
 
   console.log({ issuesForRepo });
 
-  issuesForRepo.data.forEach(async (issue) => {
+  issuesForRepo.forEach(async (issue) => {
     // find bounty enabled comment
     const { data: issueComments } = await appOctokit.issues.listComments({
       owner: issue.repository.owner,
@@ -55,7 +55,7 @@ const main = async ({
 
     console.log({ issueComments });
 
-    const bountyEnabledComment = issueComments.data.find(
+    const { data: bountyEnabledComment } = issueComments.data.find(
       (comment) =>
         comment.user === appId &&
         comment.body.toLowerCase().includes("bounty enabled")
