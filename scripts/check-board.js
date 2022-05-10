@@ -61,10 +61,10 @@ const main = async ({
     const bountyEnabledComment = issueComments.find((comment) => {
       
       console.log({ 'comment.user.id': comment.user.id }, {botId})
-      console.log('comment.user.id === botId', comment.user.id === botId)
+      console.log('comment.user.id === botId', comment.user.id.toString() === botId)
 
       return (
-        comment.user.id === botId &&
+        comment.user.id.toString() === botId &&
         comment.body.toLowerCase().includes("bounty enabled")
       );
     });
