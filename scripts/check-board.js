@@ -101,6 +101,8 @@ const main = async ({
 
       const explorerUrl = new URL(`https://explorer.solana.com/address/${bountyVaultPublicKey.toBase58()}`);
 
+      console.log({ cluster, 'process.env.CLUSTER': process.env.CLUSTER });
+
       explorerUrl.searchParams.append("cluster", cluster);
 
       if (cluster === "custom") {
