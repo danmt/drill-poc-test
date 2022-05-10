@@ -6,6 +6,7 @@ const { BN } = require("bn.js");
 
 const main = async ({
   appId,
+  installationId,
   privateKey,
   githubRepository,
   programId,
@@ -17,6 +18,7 @@ const main = async ({
   const appOctokit = new Octokit({
     auth: {
       id: appId,
+      installationId,
       privateKey,
     },
     authStrategy: createAppAuth,
@@ -84,6 +86,7 @@ const main = async ({
 
 main({
   appId: process.env.APP_ID,
+  installationId: process.env.INSTALLATION_ID,
   privateKey: process.env.PRIVATE_KEY,
   githubRepository: process.env.GITHUB_REPOSITORY,
   programId: process.env.PROGRAM_ID,
