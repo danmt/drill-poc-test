@@ -57,7 +57,7 @@ const main = async ({
     console.log({ bountyEnabledComment });
 
     if (bountyEnabledComment !== undefined) {
-      console.log(bountyEnabledComment.body_text.split('\n'))
+      console.log(bountyEnabledComment.body.split('\n'))
     }
 
     /* // find bounty vault account
