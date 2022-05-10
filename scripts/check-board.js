@@ -98,7 +98,7 @@ const main = async ({
 
       let body = "";
 
-      console.log(({ vaultAmount: bountyVaultAccount.amount / acceptedMint.decimals}))
+      console.log(({ vaultAmount: Number(bountyVaultAccount.amount) / acceptedMint.decimals}))
 
       if (bodyAsArray.length === 2) {
         body = [
