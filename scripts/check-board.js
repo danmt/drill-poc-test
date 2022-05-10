@@ -43,11 +43,7 @@ const main = async ({
     state: "open",
   });
 
-  const { data: app } = await appOctokit.apps.getAuthenticated();
-  
-  console.log({ app });
-
-  const { data: user } = await appOctokit.rest.users.getByUsername({
+  const { data: appUser } = await appOctokit.rest.users.getByUsername({
     username: 'drill-poc[bot]',
   })
 
@@ -66,10 +62,10 @@ const main = async ({
     console.log({ issueComments });
 
     const bountyEnabledComment = issueComments.find((comment) => {
-      console.log(comment.user, comment.user.id === appId);
+      console.log(comment.user.id === appUser.id);
 
       return (
-        comment.user.id === appId &&
+        comment.user.id === appUser.id &&
         comment.body.toLowerCase().includes("bounty enabled")
       );
     });
