@@ -57,29 +57,21 @@ const main = async ({
     console.log({ bountyEnabledComment });
 
     if (bountyEnabledComment !== undefined) {
-      const bodyAsArray = bountyEnabledComment.body.split('\n');
+      const bodyAsArray = bountyEnabledComment.body.split("\n");
+      let body = "";
 
       if (bodyAsArray.length === 2) {
-        await appOctokit.issues.updateComment({
-          body: [
-            ...bodyAsArray,
-            'Amount: 1'
-          ],
-          comment_id: comment.id,
-          owner,
-          repo: repoName
-        })
+        body = [...bodyAsArray, "Amount: 1"].join("\n");
       } else if (bodyAsArray === 3) {
-        await appOctokit.issues.updateComment({
-          body: [
-            ...bodyAsArray.slice(0, -1),
-            'Amount: 1'
-          ],
-          comment_id: comment.id,
-          owner,
-          repo: repoName
-        })
+        body = [...bodyAsArray.slice(0, -1), "Amount: 1"].join("\n");
       }
+
+      await appOctokit.issues.updateComment({
+        body: [...bodyAsArray, "Amount: 1"],
+        comment_id: bountyEnabledComment.id,
+        owner,
+        repo: repoName,
+      });
     }
 
     /* // find bounty vault account
