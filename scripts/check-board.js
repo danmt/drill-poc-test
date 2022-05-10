@@ -56,10 +56,13 @@ const main = async ({
     console.log({ issueComments });
 
     const bountyEnabledComment = issueComments.find(
-      (comment) =>
-        comment.user === appId &&
+      (comment) =>{
+        console.log(comment.user, comment.user.id === appId);
+        
+
+        return comment.user.id === appId &&
         comment.body.toLowerCase().includes("bounty enabled")
-    );
+    });
 
     console.log({ bountyEnabledComment });
 
