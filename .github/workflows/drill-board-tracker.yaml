@@ -32,5 +32,6 @@ jobs:
           PROGRAM_ID: ${{ secrets.PROGRAM_ID }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APP_ID: ${{ secrets.APP_ID }}
+          DRILL_BOT_ID: ${{ secrets.DRILL_BOT_ID }}
           INSTALLATION_ID: ${{ secrets.INSTALLATION_ID }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}

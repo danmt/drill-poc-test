@@ -5,6 +5,7 @@ const { Octokit } = require("@octokit/rest");
 const main = async ({
   appId,
   installationId,
+  botId,
   privateKey,
   githubRepository,
   programId,
@@ -21,12 +22,7 @@ const main = async ({
     authStrategy: createAppAuth,
   });
   const [owner, repoName] = githubRepository.split("/");
-  const { data: repository } = await appOctokit.repos.get({
-    owner,
-    repo: repoName,
-  });
 
-  console.log({ repository });
   /* const [boardPublicKey] = await PublicKey.findProgramAddress(
     [
       Buffer.from("board", "utf8"),
@@ -43,12 +39,6 @@ const main = async ({
     state: "open",
   });
 
-  const { data: appUser } = await appOctokit.rest.users.getByUsername({
-    username: 'drill-poc[bot]',
-  })
-  
-  console.log({ issuesForRepo });
-
   issuesForRepo.forEach(async (issue) => {
     // find bounty enabled comment
     const { data: issueComments } = await appOctokit.issues.listComments({
@@ -57,13 +47,9 @@ const main = async ({
       issue_number: issue.number,
     });
 
-    console.log({ issueComments });
-
     const bountyEnabledComment = issueComments.find((comment) => {
-      console.log(comment.user.id === appUser.id);
-
       return (
-        comment.user.id === appUser.id &&
+        comment.user.id === botId &&
         comment.body.toLowerCase().includes("bounty enabled")
       );
     });
@@ -99,6 +85,7 @@ const main = async ({
 main({
   appId: parseInt(process.env.APP_ID, 10),
   installationId: parseInt(process.env.INSTALLATION_ID, 10),
+  botId: parseInt(process.env.DRILL_BOT_ID, 10),
   privateKey: process.env.PRIVATE_KEY,
   githubRepository: process.env.GITHUB_REPOSITORY,
   programId: process.env.PROGRAM_ID,
