@@ -132,6 +132,7 @@ const main = async ({
         comment_id: bountyEnabledComment.id,
         owner,
         repo: repoName,
+        contentType: "text/x-markdown",
       });
     }
   });
