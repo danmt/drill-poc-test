@@ -1,6 +1,6 @@
 const { createAppAuth } = require("@octokit/auth-app");
 const { Octokit } = require("@octokit/rest");
-const { getAccount } = require("@solana/spl-token");
+const { getAccount, getMint } = require("@solana/spl-token");
 const { Connection, PublicKey } = require("@solana/web3.js");
 const BN = require("bn.js");
 
@@ -79,6 +79,7 @@ const main = async ({
         connection,
         bountyVaultPublicKey
       );
+      const acceptedMint = await getMint(bountyVaultAccount.mint);
 
       console.log({
         bountyEnabledComment,
@@ -93,6 +94,8 @@ const main = async ({
       console.log({ bodyAsArray });
 
       let body = "";
+
+      console.log(({ vaultAmount: bountyVaultAccount.amount / acceptedMint.decimals}))
 
       if (bodyAsArray.length === 2) {
         body = [
