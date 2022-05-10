@@ -12,7 +12,32 @@ const main = async ({
   programId,
   rpcEndpoint,
 }) => {
-  console.log({ appId });
+  console.log({
+    appId,
+    installationId,
+    privateKey,
+    githubRepository,
+    programId,
+    rpcEndpoint,
+  });
+
+  console.log({
+    clientId: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET
+  })
+
+  const appAuth = createAppAuth({
+    appId,
+    privateKey,
+  });
+  
+  const installationAuth123 = await appAuth({
+    type: "installation",
+    installationId,
+    factory: createAppAuth,
+  });
+
+  console.log({ installationAuth123 })
 
   const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
@@ -78,8 +103,8 @@ const main = async ({
         bountyVaultPublicKey
       );
       console.log({ bountyEnabledComment, bountyVaultAccount });
-    } catch(error) {
-      console.erro({ error })
+    } catch (error) {
+      console.erro({ error });
     }
   });
 };
