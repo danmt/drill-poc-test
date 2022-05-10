@@ -99,7 +99,7 @@ const main = async ({
 
       const bountyVaultUserAmount = Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals);
 
-      const explorerUrl = new URL(`https://explorer.solana.com/tx/${signature}`);
+      const explorerUrl = new URL(`https://explorer.solana.com/address/${bountyVaultPublicKey.toBase58()}`);
 
       explorerUrl.searchParams.append("cluster", cluster);
 
