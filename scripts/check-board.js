@@ -23,8 +23,13 @@ const main = async ({
 
   const [repoName, owner] = githubRepository.split("/");
 
+  console.log({
+    owner,
+    repo: repoName,
+  })
+  
   try {
-    const { data } = await requestWithAuth("GET /repos/{owner}/{repo}/issues", {
+    const { data } = await requestWithAuth("GET /repos/{owner}/{repo}", {
       owner,
       repo: repoName,
     });
