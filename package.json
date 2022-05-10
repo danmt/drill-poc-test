@@ -3,6 +3,7 @@
     "@octokit/app": "^12.0.5",
     "@octokit/auth-app": "^3.6.1",
     "@octokit/core": "^3.6.0",
+    "@octokit/request": "^5.6.3",
     "@octokit/rest": "^18.12.0",
     "@solana/spl-token": "^0.2.0",
     "@solana/web3.js": "^1.41.4",

@@ -3,6 +3,7 @@ const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 const { getAccount } = require("@solana/spl-token");
 const { BN } = require("bn.js");
+const { request } = require("@octokit/request");
 
 const main = async ({
   appId,
@@ -23,13 +24,13 @@ const main = async ({
 
   console.log({
     clientId: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET
-  })
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  });
 
   const auth = createAppAuth({
     appId,
     privateKey,
-    installationId
+    installationId,
   });
 
   const requestWithAuth = request.defaults({
@@ -41,16 +42,16 @@ const main = async ({
     },
   });
 
-  console.log({ requestWithAuth })
+  console.log({ requestWithAuth });
 
   const [repoName, owner] = githubRepository.split("/");
 
-  const { data } = await requestWithAuth('GET /repos/{owner}/{repo}/issues', {
+  const { data } = await requestWithAuth("GET /repos/{owner}/{repo}/issues", {
     owner,
     repo: repoName,
-  })
+  });
 
-  console.log({ data })
+  console.log({ data });
 
   /* const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
