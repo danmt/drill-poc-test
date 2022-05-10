@@ -1,16 +1,31 @@
 name: Drill Board Tracker
-on:
-  schedule:
-    - cron: "*/5 * * * *"
+on: push
 
 jobs:
   check-board-bounties:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [17.6.0]
+        os: [ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: npm ci
-      - run: node scripts/check-board.js
+      - id: config-repo
+        name: Pre config - 🧰 Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - id: config-node
+        name: Pre config - 🧰 Setting up Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - id: install dependencies
+        run: npm ci
+
+      - id: run script
+        run: node scripts/check-board.js
         env:
           RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
           REPOSITORY_ID: ${{ secrets.REPOSITORY_ID }}
