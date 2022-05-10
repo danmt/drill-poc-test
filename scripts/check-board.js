@@ -1,8 +1,4 @@
-const { Connection, PublicKey } = require("@solana/web3.js");
-const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
-const { getAccount } = require("@solana/spl-token");
-const { BN } = require("bn.js");
 const { request } = require("@octokit/request");
 
 const main = async ({
@@ -13,20 +9,6 @@ const main = async ({
   programId,
   rpcEndpoint,
 }) => {
-  console.log({
-    appId,
-    installationId,
-    privateKey,
-    githubRepository,
-    programId,
-    rpcEndpoint,
-  });
-
-  console.log({
-    clientId: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  });
-
   const auth = createAppAuth({
     appId,
     privateKey,
@@ -36,22 +18,21 @@ const main = async ({
   const requestWithAuth = request.defaults({
     request: {
       hook: auth.hook,
-    },
-    mediaType: {
-      previews: ["machine-man"],
-    },
+    }
   });
-
-  console.log({ requestWithAuth });
 
   const [repoName, owner] = githubRepository.split("/");
 
-  const { data } = await requestWithAuth("GET /repos/{owner}/{repo}/issues", {
-    owner,
-    repo: repoName,
-  });
+  try {
+    const { data } = await requestWithAuth("GET /repos/{owner}/{repo}/issues", {
+      owner,
+      repo: repoName,
+    });
+    console.log({ data });
+  } catch(error) {
+    console.log('PUTO MALDITO ERROR', { error });
+  }
 
-  console.log({ data });
 
   /* const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
