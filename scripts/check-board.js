@@ -44,7 +44,7 @@ const main = async ({
 
   const appOctokit = new Octokit({
     auth: {
-      id: appId,
+      appId,
       installationId,
       privateKey,
     },
