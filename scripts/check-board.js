@@ -46,9 +46,7 @@ const main = async ({
   const { data: appUser } = await appOctokit.rest.users.getByUsername({
     username: 'drill-poc[bot]',
   })
-
-  console.log({ user });
-
+  
   console.log({ issuesForRepo });
 
   issuesForRepo.forEach(async (issue) => {
