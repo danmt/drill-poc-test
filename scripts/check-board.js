@@ -12,6 +12,7 @@ const main = async ({
   githubRepository,
   programId,
   rpcEndpoint,
+  cluster,
 }) => {
   const connection = new Connection(rpcEndpoint);
   const appOctokit = new Octokit({
@@ -86,17 +87,27 @@ const main = async ({
 
       const bodyAsArray = bountyEnabledComment.body.split("\n").filter(segment => segment !== '');
 
+      const bountyVaultUserAmount = Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals);
+
+      const explorerUrl = new URL(`https://explorer.solana.com/tx/${signature}`);
+
+      explorerUrl.searchParams.append("cluster", cluster);
+
+      if (cluster === "custom") {
+        explorerUrl.searchParams.append("customUrl", rpcEndpoint);
+      }
+
       let body = "";
 
       if (bodyAsArray.length === 2) {
         body = [
           ...bodyAsArray,
-          `Amount: ${Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals)}`,
+          `Amount: ${bountyVaultUserAmount} [view in explorer](${explorerUrl.toString()})`,
         ].join("\n");
       } else if (bodyAsArray.length === 3) {
         body = [
           ...bodyAsArray.slice(0, -1),
-          `Amount: ${Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals)}`,
+          `Amount: ${bountyVaultUserAmount} [view in explorer](${explorerUrl.toString()})`,
         ].join("\n");
       }
 
@@ -111,11 +122,12 @@ const main = async ({
 };
 
 main({
-  appId: parseInt(process.env.APP_ID, 10),
-  installationId: parseInt(process.env.INSTALLATION_ID, 10),
-  botId: parseInt(process.env.DRILL_BOT_ID, 10),
+  appId: process.env.APP_ID,
+  installationId: process.env.INSTALLATION_ID,
+  botId: process.env.DRILL_BOT_ID,
   privateKey: process.env.PRIVATE_KEY,
   githubRepository: process.env.GITHUB_REPOSITORY,
   programId: process.env.PROGRAM_ID,
   rpcEndpoint: process.env.RPC_ENDPOINT,
+  cluster: process.env.CLUSTER,
 });
