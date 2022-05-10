@@ -9,7 +9,7 @@ const main = async ({
   programId,
   rpcEndpoint,
 }) => {
-  const auth = createAppAuth({
+  /* const auth = createAppAuth({
     appId,
     privateKey,
     installationId,
@@ -36,10 +36,11 @@ const main = async ({
     console.log({ data });
   } catch(error) {
     console.log('PUTO MALDITO ERROR', { error });
-  }
+  } */
 
 
-  /* const connection = new Connection(rpcEndpoint);
+  // const connection = new Connection(rpcEndpoint);
+  
   const appOctokit = new Octokit({
     auth: {
       id: appId,
@@ -53,13 +54,15 @@ const main = async ({
     owner,
     repo: repoName,
   });
-  const [boardPublicKey] = await PublicKey.findProgramAddress(
+
+  console.log({ repository })
+  /* const [boardPublicKey] = await PublicKey.findProgramAddress(
     [
       Buffer.from("board", "utf8"),
       new BN(repository.id).toArrayLike(Buffer, "le", 4),
     ],
     new PublicKey(programId)
-  );
+  ); */
 
   // get all issues with a bounty enabled
   const issuesForRepo = await appOctokit.issues.listForRepo({
@@ -71,7 +74,7 @@ const main = async ({
 
   console.log({ issuesForRepo });
 
-  issuesForRepo.data.forEach(async (issue) => {
+  /* issuesForRepo.data.forEach(async (issue) => {
     // find bounty enabled comment
     const issueComments = await appOctokit.issues.listComments({
       owner: issue.repository.owner,
