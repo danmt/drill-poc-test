@@ -46,6 +46,8 @@ const main = async ({
     state: "open",
   });
 
+  console.log('DA FUCK')
+
   issuesForRepo.forEach(async (issue) => {
     // find bounty enabled comment
     const { data: issueComments } = await appOctokit.issues.listComments({
@@ -60,6 +62,8 @@ const main = async ({
         comment.body.toLowerCase().includes("bounty enabled")
       );
     });
+
+    console.log({bountyEnabledComment})
 
     if (bountyEnabledComment !== undefined) {
       // find bounty vault account
