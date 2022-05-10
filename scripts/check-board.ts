@@ -118,12 +118,12 @@ const main = async ({
       if (bodyAsArray?.length === 2) {
         body = [
           ...bodyAsArray,
-          `Amount: ${bountyVaultUserAmount}${mintDetails?.symbol ?? ' Unknown Token'} [view in explorer](${explorerUrl.toString()}).`,
+          `Amount: ${bountyVaultUserAmount}**${mintDetails?.symbol ?? ' (Unknown Token)'}** [view in explorer](${explorerUrl.toString()}).`,
         ].join("\n");
       } else if (bodyAsArray?.length === 3) {
         body = [
           ...bodyAsArray.slice(0, -1),
-          `Amount: ${bountyVaultUserAmount}${mintDetails?.symbol ?? ' Unknown Token'}  [view in explorer](${explorerUrl.toString()}).`,
+          `Amount: ${bountyVaultUserAmount}**${mintDetails?.symbol ?? ' (Unknown Token)'}**  [view in explorer](${explorerUrl.toString()}).`,
         ].join("\n");
       }
 
