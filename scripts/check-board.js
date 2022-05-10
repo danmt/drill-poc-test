@@ -55,7 +55,7 @@ const main = async ({
 
     console.log({ issueComments });
 
-    const bountyEnabledComment = issueComments.data.find(
+    const bountyEnabledComment = issueComments.find(
       (comment) =>
         comment.user === appId &&
         comment.body.toLowerCase().includes("bounty enabled")
