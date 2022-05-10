@@ -10,36 +10,6 @@ const main = async ({
   programId,
   rpcEndpoint,
 }) => {
-  /* const auth = createAppAuth({
-    appId,
-    privateKey,
-    installationId,
-  });
-
-  const requestWithAuth = request.defaults({
-    request: {
-      hook: auth.hook,
-    }
-  });
-
-  const [owner, repoName] = githubRepository.split("/");
-
-  console.log({
-    owner,
-    repo: repoName,
-  })
-
-  try {
-    const { data } = await requestWithAuth("GET /repos/{owner}/{repo}", {
-      owner,
-      repo: repoName,
-    });
-    console.log({ data });
-  } catch(error) {
-    console.log('PUTO MALDITO ERROR', { error });
-  } */
-
-
   // const connection = new Connection(rpcEndpoint);
 
   const appOctokit = new Octokit({
@@ -51,12 +21,12 @@ const main = async ({
     authStrategy: createAppAuth,
   });
   const [owner, repoName] = githubRepository.split("/");
-  const repository = await appOctokit.repos.get({
+  const { data: repository } = await appOctokit.repos.get({
     owner,
     repo: repoName,
   });
 
-  console.log({ repository })
+  console.log({ repository });
   /* const [boardPublicKey] = await PublicKey.findProgramAddress(
     [
       Buffer.from("board", "utf8"),
@@ -66,7 +36,7 @@ const main = async ({
   ); */
 
   // get all issues with a bounty enabled
-  const issuesForRepo = await appOctokit.issues.listForRepo({
+  const { data: issuesForRepo } = await appOctokit.issues.listForRepo({
     repo: repoName,
     owner,
     labels: "drill:bounty:enabled",
