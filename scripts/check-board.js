@@ -48,8 +48,8 @@ const main = async ({
   issuesForRepo.forEach(async (issue) => {
     // find bounty enabled comment
     const { data: issueComments } = await appOctokit.issues.listComments({
-      owner: issue.repository.owner,
-      repo: issue.repository.name,
+      owner,
+      repo: repoName,
       issue_number: issue.number,
     });
 
