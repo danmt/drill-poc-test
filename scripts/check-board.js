@@ -1,5 +1,6 @@
 const { createAppAuth } = require("@octokit/auth-app");
 const { request } = require("@octokit/request");
+const { Octokit } = require("@octokit/rest");
 
 const main = async ({
   appId,
@@ -40,7 +41,7 @@ const main = async ({
 
 
   // const connection = new Connection(rpcEndpoint);
-  
+
   const appOctokit = new Octokit({
     auth: {
       id: appId,
