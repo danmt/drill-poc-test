@@ -1,6 +1,7 @@
 import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
 import { getAccount, getMint } from "@solana/spl-token";
+import { TokenListProvider } from "@solana/spl-token-registry";
 import { Connection, PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 
@@ -110,15 +111,19 @@ const main = async ({
 
       let body = "";
 
+      const tokens = await new TokenListProvider().resolve();
+      const tokenList = tokens.filterByClusterSlug(cluster).getList();
+      const mintDetails = tokenList.find(token => token.address === acceptedMint.address.toBase58())
+
       if (bodyAsArray?.length === 2) {
         body = [
           ...bodyAsArray,
-          `Amount: ${bountyVaultUserAmount} [view in explorer](${explorerUrl.toString()})`,
+          `Amount: ${bountyVaultUserAmount}${mintDetails?.symbol ?? ' Unknown Token'} [view in explorer](${explorerUrl.toString()}).`,
         ].join("\n");
       } else if (bodyAsArray?.length === 3) {
         body = [
           ...bodyAsArray.slice(0, -1),
-          `Amount: ${bountyVaultUserAmount} [view in explorer](${explorerUrl.toString()})`,
+          `Amount: ${bountyVaultUserAmount}${mintDetails?.symbol ?? ' Unknown Token'}  [view in explorer](${explorerUrl.toString()}).`,
         ].join("\n");
       }
 
