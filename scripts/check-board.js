@@ -45,19 +45,25 @@ const main = async ({
 
   console.log({ issuesForRepo });
 
-  /* issuesForRepo.data.forEach(async (issue) => {
+  issuesForRepo.data.forEach(async (issue) => {
     // find bounty enabled comment
-    const issueComments = await appOctokit.issues.listComments({
+    const { data: issueComments } = await appOctokit.issues.listComments({
       owner: issue.repository.owner,
       repo: issue.repository.name,
       issue_number: issue.number,
     });
+
+    console.log({ issueComments });
+
     const bountyEnabledComment = issueComments.data.find(
       (comment) =>
-        comment.user === appId && comment.body.includes("Bounty Enabled")
+        comment.user === appId &&
+        comment.body.toLowerCase().includes("bounty enabled")
     );
 
-    // find bounty vault account
+    console.log({ bountyEnabledComment });
+
+    /* // find bounty vault account
     const [bountyPublicKey] = await PublicKey.findProgramAddress(
       [
         Buffer.from("bounty", "utf8"),
@@ -79,8 +85,8 @@ const main = async ({
       console.log({ bountyEnabledComment, bountyVaultAccount });
     } catch (error) {
       console.erro({ error });
-    }
-  }); */
+    } */
+  });
 };
 
 main({
