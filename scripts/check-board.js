@@ -80,12 +80,14 @@ const main = async ({
         bountyVaultPublicKey
       );
 
-      console.log({ bountyEnabledComment, bountyVaultAccount })
+      console.log({
+        bountyEnabledComment,
+        bountyVaultAccount,
+        bountyVaultPublicKey: bountyVaultPublicKey.toBase58(),
+      });
 
       const bodyAsArray = bountyEnabledComment.body.split("\n");
       let body = "";
-
-      bountyVaultAccount.amount.toString();
 
       if (bodyAsArray.length === 2) {
         body = [
