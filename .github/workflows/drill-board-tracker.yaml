@@ -35,3 +35,4 @@ jobs:
           DRILL_BOT_ID: ${{ secrets.DRILL_BOT_ID }}
           INSTALLATION_ID: ${{ secrets.INSTALLATION_ID }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          CLUSTER: ${{ secrets.CLUSTER }}
