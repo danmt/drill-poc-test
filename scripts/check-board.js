@@ -99,6 +99,8 @@ const main = async ({
 
       let body = "";
 
+      console.log(bodyAsArray.length)
+
       if (bodyAsArray.length === 2) {
         body = [
           ...bodyAsArray,
