@@ -92,16 +92,28 @@ const main = async ({
         connection,
         bountyVaultPublicKey
       );
-      const acceptedMint = await getMint(
-        connection,
-        bountyVaultAccount.mint
+      const acceptedMint = await getMint(connection, bountyVaultAccount.mint);
+
+      const tokens = await new TokenListProvider().resolve();
+      const tokenList = tokens.filterByClusterSlug(cluster).getList();
+      const mintDetails = tokenList.find(
+        (token) => token.address === acceptedMint.address.toBase58()
       );
 
-      const bodyAsArray = bountyEnabledComment.body?.split("\n").filter(segment => segment !== '');
+      const bodyAsArray = bountyEnabledComment.body
+        ?.split("\n")
+        .filter((segment) => segment !== "");
 
-      const bountyVaultUserAmount = Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals);
+      const bountyVaultUserAmount = (
+        Number(bountyVaultAccount.amount) / Math.pow(10, acceptedMint.decimals)
+      ).toLocaleString(undefined, {
+        currencySign: mintDetails?.symbol,
+        minimumFractionDigits: 2,
+      });
 
-      const explorerUrl = new URL(`https://explorer.solana.com/address/${bountyVaultPublicKey.toBase58()}`);
+      const explorerUrl = new URL(
+        `https://explorer.solana.com/address/${bountyVaultPublicKey.toBase58()}`
+      );
 
       explorerUrl.searchParams.append("cluster", cluster);
 
@@ -111,19 +123,19 @@ const main = async ({
 
       let body = "";
 
-      const tokens = await new TokenListProvider().resolve();
-      const tokenList = tokens.filterByClusterSlug(cluster).getList();
-      const mintDetails = tokenList.find(token => token.address === acceptedMint.address.toBase58())
-
       if (bodyAsArray?.length === 2) {
         body = [
           ...bodyAsArray,
-          `Amount: ${bountyVaultUserAmount}${mintDetails?.symbol ?? ' (Unknown Token)'} [view in explorer](${explorerUrl.toString()}).`,
+          `Total: ${bountyVaultUserAmount}${
+            mintDetails === undefined ? " (Unknown Token)" : ""
+          } [view in explorer](${explorerUrl.toString()}).`,
         ].join("\n");
       } else if (bodyAsArray?.length === 3) {
         body = [
           ...bodyAsArray.slice(0, -1),
-          `Amount: ${bountyVaultUserAmount}${mintDetails?.symbol ?? ' (Unknown Token)'} [view in explorer](${explorerUrl.toString()}).`,
+          `Total: ${bountyVaultUserAmount}${
+            mintDetails === undefined ? " (Unknown Token)" : ""
+          } [view in explorer](${explorerUrl.toString()}).`,
         ].join("\n");
       }
 
@@ -132,42 +144,41 @@ const main = async ({
         comment_id: bountyEnabledComment.id,
         owner,
         repo: repoName,
-        
       });
     }
   });
 };
 
 if (process.env.APP_ID === undefined) {
-  throw new Error('APP_ID env variable is missing.')
+  throw new Error("APP_ID env variable is missing.");
 }
 
 if (process.env.INSTALLATION_ID === undefined) {
-  throw new Error('INSTALLATION_ID env variable is missing.')
+  throw new Error("INSTALLATION_ID env variable is missing.");
 }
 
 if (process.env.DRILL_BOT_ID === undefined) {
-  throw new Error('DRILL_BOT_ID env variable is missing.')
+  throw new Error("DRILL_BOT_ID env variable is missing.");
 }
 
 if (process.env.PRIVATE_KEY === undefined) {
-  throw new Error('PRIVATE_KEY env variable is missing.')
+  throw new Error("PRIVATE_KEY env variable is missing.");
 }
 
 if (process.env.GITHUB_REPOSITORY === undefined) {
-  throw new Error('GITHUB_REPOSITORY env variable is missing.')
+  throw new Error("GITHUB_REPOSITORY env variable is missing.");
 }
 
 if (process.env.PROGRAM_ID === undefined) {
-  throw new Error('PROGRAM_ID env variable is missing.')
+  throw new Error("PROGRAM_ID env variable is missing.");
 }
 
 if (process.env.RPC_ENDPOINT === undefined) {
-  throw new Error('RPC_ENDPOINT env variable is missing.')
+  throw new Error("RPC_ENDPOINT env variable is missing.");
 }
 
 if (process.env.CLUSTER === undefined) {
-  throw new Error('CLUSTER env variable is missing.')
+  throw new Error("CLUSTER env variable is missing.");
 }
 
 main({
