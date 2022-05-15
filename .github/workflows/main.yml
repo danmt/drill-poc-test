@@ -9,11 +9,11 @@ jobs:
         id: vault-updater
         uses: heavy-duty/drill-vault-updater-action@v1.0.1
         with:
-          program-id: "2fg324Gf51Nrp1jzxXETvJmXPEiHz9ybNY1r575MtijW"
           token: ${{secrets.GITHUB_TOKEN}}
           rpc-endpoint: ${{ secrets.RPC_ENDPOINT }}
-          program-id: ${{ secrets.PROGRAM_ID }}          
+          program-id: ${{ secrets.PROGRAM_ID }}
           drill-bot-id: ${{ secrets.DRILL_BOT_ID }}
+          github-repository: ${{secrets.GITHUB_REPOSITORY}}
           cluster: ${{ secrets.CLUSTER }}
       - name: Get Result
         run: echo "The result was ${{ steps.vault-updater.result }}"
